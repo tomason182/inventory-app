@@ -26,8 +26,14 @@ const publishersList = [
   },
   {
     name: "Alfaguara",
-    address: "Av. San Juan 2456",
+    address: "Av. San Juan 2456, Nuñez, Buenos Aires",
     phoneNumber: "2135-7824",
     email: "info@alfagura.com",
+  },
+  {
+    name: "Gaia Ediciones",
+    address: "San Martin 345, San Justo, CABA",
+    phoneNumber: "4542-9521",
+    email: "gaiaediciones@mail.com",
   },
 ];
