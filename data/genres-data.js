@@ -17,3 +17,5 @@ const genresData = [
   "psychology",
   "Spiritual health",
 ];
+
+module.exports = genresData;

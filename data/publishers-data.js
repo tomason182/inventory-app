@@ -37,3 +37,5 @@ const publishersList = [
     email: "gaiaediciones@mail.com",
   },
 ];
+
+module.exports = publishersList;

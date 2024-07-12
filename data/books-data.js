@@ -154,3 +154,5 @@ const booksList = [
     language: "ES",
   },
 ];
+
+module.exports = booksList;

@@ -12,9 +12,12 @@ const booksData = require("./data/books-data");
 const genresData = require("./data/genres-data");
 
 const mongoose = require("mongoose");
+mongoose.set("strictQuery", false);
+
 const genre = require("./models/genre");
 const publisher = require("./models/publisher");
-mongoose.set("strictQuery", false);
+const author = require("./models/author");
+const book = require("./models/book");
 
 const mongoUrl = argv[2];
 
@@ -25,14 +28,14 @@ async function main() {
   await mongoose.connect(mongoUrl);
   console.log("Debug: Database connected");
   await Promise.all([
-    populatePublisherCollection(),
-    populateAuthorCollection(),
-    populateGenreCollection(),
+    populatePublisherCollection(publishersData),
+    populateAuthorCollection(authorsData),
+    populateGenreCollection(genresData),
   ]);
   console.log(
     "Debug: Authors, publisher and genre collection populated. Starting populating books collection"
   );
-  await populateBookData(),
+  await populateBookData(booksData),
     console.log("Population finish. Closing db connection");
   mongoose.connection.close();
 }

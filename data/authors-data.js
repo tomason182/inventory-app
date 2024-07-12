@@ -48,3 +48,5 @@ const authorsList = [
     date_of_death: "",
   },
 ];
+
+module.exports = authorsList;
