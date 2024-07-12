@@ -54,25 +54,28 @@ async function populatePublisherCollection() {
   });
 }
 
-async function populateAuthorCollection() {
-  authorsData.forEach(async (authorData) => {
-    const author = new Author({
-      first_name: authorData.first_name,
-      last_name: authorData.last_name,
-      bio: authorData.bio,
-      nationality: authorData.nationality,
-      date_of_birth: authorData.date_of_birth,
-      date_of_death: authorData.date_of_death,
-    });
+async function populateAuthorCollection(authorsData) {
+  await Promise.all(
+    authorsData.map(async (authorData) => {
+      let author = await Author.findOne({
+        first_name: authorData.first_name,
+        last_name: authorData.last_name,
+      });
 
-    const authorExist = await Author.findOne({
-      first_name: authorData.first_name,
-      last_name: authorData.last_name,
-    });
-    if (authorExist !== null) {
-      await author.save();
-    }
-  });
+      if (author === null) {
+        author = new Author({
+          first_name: authorData.first_name,
+          last_name: authorData.last_name,
+          bio: authorData.bio,
+          nationality: authorData.nationality,
+          date_of_birth: authorData.date_of_birth,
+          date_of_death: authorData.date_of_death,
+        });
+
+        await author.save();
+      }
+    })
+  );
 }
 
 async function populateGenreCollection(genresData) {
