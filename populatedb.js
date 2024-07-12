@@ -135,28 +135,43 @@ async function getAuthorId(fullname) {
 }
 
 async function getPublisherId(publisherName) {
-  const publisherObject = await Publisher.findOne({ name: publisherName });
+  // Try to find publisherName in Publisher collection
+  let publisherObject = await Publisher.findOne({ name: publisherName });
+  // if find name return it's Id.
   if (publisherObject !== null) {
     return publisherObject._id;
   } else {
-    const publisher = new Publisher({
-      company_name: publisherName,
+    // If name not in the collection. Create a new document.
+    const newPublisher = new Publisher({
+      name: publisherName,
       address: "Unknown",
       phoneNumber: "Unkown",
       email: "Unkown",
     });
 
-    publisherObject = await Publisher.findOne({ name: publisherName });
+    // save new document.
+    await newPublisher.save();
+    // Find again the recent created document and return Id.
+    // publisherObject = await Publisher.findOne({ name: publisherName }); ** Not necessary to make the search?
     return publisherObject._id;
   }
 }
 
-async function getGenreId(genreName) {
-  // Genres is a list. Need to loop throw each of them.
-  const genreObject = await Genre.findOne({ name: genreName });
-  if (genreObject !== null) {
-    return genreObject._id;
-  } else {
-    const genre = new Genre({ name: genreName });
-  }
+async function getGenreId(genresName) {
+  // Genres is a list. Need to loop on every item.
+  // Initialize an empty list for store genres names.
+  const genreList = await Promise.all(
+    genresName.map(async (name) => {
+      let genreObj = await Genre.find({ name });
+
+      if (genreObj) {
+        return genreObj._id;
+      } else {
+        const newGenre = new Genre({ name });
+        await newGenre.save();
+        return newGenre._id;
+      }
+    })
+  );
+  return genreList;
 }
