@@ -88,49 +88,51 @@ async function populateGenreData() {
   });
 }
 
-async function populateBookData() {
+async function populateBookData(booksData) {
   // Logic to populate book data.
   // As book collection needs authors, publisher and genre info to be populated
-  // needed to be outside Promise.all
-  booksData.forEach(async (bookData) => {
-    const authorId = await getAuthorId(bookData.author);
-    const publisherId = await getPublisherId(bookData.publisher);
-    const genreId = await getGenreId(bookData.genre);
+  await Promise.all(
+    booksData.map(async (book) => {
+      const authorId = await getAuthorId(book.author);
+      const publisherId = await getPublisherId(book.publisher);
+      const genreIds = await getGenreId(book.genre);
 
-    const book = new Book({
-      title: bookData.title,
-      author: authorId,
-      summary: bookData.summary,
-      isbn: bookData.isbn,
-      genre: [...genreId],
-      publisher: publisherId,
-      qty: bookData.qtym,
-      price: [...bookData.price],
-      publishedDate: new Date(bookData.publishedDate),
-    });
-  });
+      const newBook = new Book({
+        title: book.title,
+        author: authorId,
+        summary: book.summary,
+        isbn: book.isbn,
+        genre: genreIds,
+        publisher: publisherId,
+        qty: book.qty,
+        price: book.price,
+        publishedDate: new Date(book.publishedDate),
+      });
+
+      await newBook.save();
+    })
+  );
 }
 
 async function getAuthorId(fullname) {
   const [lastName, firstName] = fullname.split(",").map((i) => i.trim());
-  const authorObject = await Author.findOne({
+  let authorObj = await Author.findOne({
     first_name: firstName,
     last_name: lastName,
   });
 
-  if (authorObject !== null) {
-    return authorObject._id;
+  if (authorObj !== null) {
+    return authorObj._id;
   } else {
-    const author = new Author({
+    authorObj = new Author({
       first_name: firstName,
       last_name: lastName,
       nationality: "Unknown",
     });
-    const authorObject = await Author.findOne({
-      first_name: firstName,
-      last_name: lastName,
-    });
-    return authorObject._id;
+
+    await authorObj.save();
+
+    return authorObj._id;
   }
 }
 
