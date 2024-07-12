@@ -1,7 +1,7 @@
 const Genre = require("../models/genre");
 
 // Display list of all genres.
-exports.genre_display_list = async function (req, res, next) {
+exports.genre_list = async function (req, res, next) {
   try {
     res.send("NOT IMPLEMENTED: genre list");
   } catch (err) {
@@ -10,7 +10,7 @@ exports.genre_display_list = async function (req, res, next) {
 };
 
 // Display detail of specific genre.
-exports.genre_display_detail = async function (req, res, next) {
+exports.genre_detail = async function (req, res, next) {
   try {
     res.send(`NOT IMPLEMENTED: genre detail: ${req.params.id}`);
   } catch (err) {
@@ -37,7 +37,7 @@ exports.genre_create_post = async function (req, res, next) {
 // Display delete genre on GET.
 exports.genre_delete_get = async function (req, res, next) {
   try {
-    res.send("NOT IMPLEMENTED: genre delete GET");
+    res.send(`NOT IMPLEMENTED: genre delete GET: ${req.params.id}`);
   } catch (err) {
     return next(err);
   }
