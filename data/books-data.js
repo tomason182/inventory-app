@@ -29,7 +29,7 @@ const booksList = [
   },
   {
     title: "EL GATO MAS CULTO DEL MUNDO",
-    author: "Mar, abad",
+    author: "Mar, Abad",
     summary:
       "El gato más culto del mundo es un cautivador relato ilustrado que transporta a los lectores al Madrid de los años 20 y hasta el final de la Segunda República, de la mano de un protagonista inesperado: Fígaro, un gato inspirado en un felino real que vivió en el Ateneo de Madrid.",
     isbn: "9788419875396",
@@ -43,7 +43,7 @@ const booksList = [
   },
   {
     title: "EL FOLLETIN ILUSTRADO",
-    author: "Mar, abad",
+    author: "Mar, Abad",
     summary:
       "El folletín ilustrado revive escenas de la España reciente en unos dibujos llenos de color y esplendor. Pero sin dejar que la fantasía ni la ficción se entrometan en los textos ni un pelo. Porque el rigor histórico se puede contar en dibujos excesivos, colores chillones y palabras rimbombantes.",
     isbn: "9788417858261",
