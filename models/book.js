@@ -7,7 +7,7 @@ const BookSchema = new Schema({
   author: { type: Schema.Types.ObjectId, ref: "Author", required: true },
   summary: { type: String },
   isbn: { type: String, require: true, maxLength: 13 },
-  genre: { type: Schema.Types.ObjectId, ref: "Genre" },
+  genre: [{ type: Schema.Types.ObjectId, ref: "Genre" }],
   publisher: { type: Schema.Types.ObjectId, ref: "Publisher", required: true },
   qty: { type: Number, maxLength: 1000, required: true },
   // adding price using an array allows to add multiple price in different currencies

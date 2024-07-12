@@ -93,9 +93,9 @@ async function populateBookData() {
   // As book collection needs authors, publisher and genre info to be populated
   // needed to be outside Promise.all
   booksData.forEach(async (bookData) => {
-    const authorId = getAuthorId();
-    const publisherId = getPublisherId();
-    const genreId = getGenreId();
+    const authorId = await getAuthorId(bookData.author);
+    const publisherId = await getPublisherId(bookData.publisher);
+    const genreId = await getGenreId(bookData.genre);
 
     const book = new Book({
       title: bookData.title,
@@ -109,4 +109,54 @@ async function populateBookData() {
       publishedDate: new Date(bookData.publishedDate),
     });
   });
+}
+
+async function getAuthorId(fullname) {
+  const [lastName, firstName] = fullname.split(",").map((i) => i.trim());
+  const authorObject = await Author.findOne({
+    first_name: firstName,
+    last_name: lastName,
+  });
+
+  if (authorObject !== null) {
+    return authorObject._id;
+  } else {
+    const author = new Author({
+      first_name: firstName,
+      last_name: lastName,
+      nationality: "Unknown",
+    });
+    const authorObject = await Author.findOne({
+      first_name: firstName,
+      last_name: lastName,
+    });
+    return authorObject._id;
+  }
+}
+
+async function getPublisherId(publisherName) {
+  const publisherObject = await Publisher.findOne({ name: publisherName });
+  if (publisherObject !== null) {
+    return publisherObject._id;
+  } else {
+    const publisher = new Publisher({
+      company_name: publisherName,
+      address: "Unknown",
+      phoneNumber: "Unkown",
+      email: "Unkown",
+    });
+
+    publisherObject = await Publisher.findOne({ name: publisherName });
+    return publisherObject._id;
+  }
+}
+
+async function getGenreId(genreName) {
+  // Genres is a list. Need to loop throw each of them.
+  const genreObject = await Genre.findOne({ name: genreName });
+  if (genreObject !== null) {
+    return genreObject._id;
+  } else {
+    const genre = new Genre({ name: genreName });
+  }
 }
