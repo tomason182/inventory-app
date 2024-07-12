@@ -9,6 +9,6 @@ const booksList = [
     publisher: "Gaia",
     qty: 3,
     price: [{ currency: "usd", value: 25 }],
-    publishedDate: new Date(2018, 3, 16),
+    publishedDate: "1995-04-23",
   },
 ];
