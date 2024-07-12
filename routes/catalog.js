@@ -31,7 +31,7 @@ router.get("/book/:id/update", book_controller.book_update_get);
 router.post("/book/:id/update", book_controller.book_update_post);
 
 // GET request for display special book.
-router.get("/book/:id");
+router.get("/book/:id", book_controller.book_detail);
 
 // GET request for display all books.
 router.get("/books", book_controller.book_list);
@@ -119,3 +119,5 @@ router.get("/genre/:id", genre_controller.genre_detail);
 
 // GET request for display genre list
 router.get("/genres", genre_controller.genre_list);
+
+module.exports = router;

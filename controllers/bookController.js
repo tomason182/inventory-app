@@ -46,7 +46,7 @@ exports.book_create_post = async function (req, res, next) {
 // Display delete book on GET.
 exports.book_delete_get = async function (req, res, next) {
   try {
-    res.send("NOT IMPLEMENTED: book delete GET");
+    res.send(`NOT IMPLEMENTED: book delete GET ${req.params.id}`);
   } catch (err) {
     return next(err);
   }
