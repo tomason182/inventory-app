@@ -167,9 +167,9 @@ async function getGenreId(genresName) {
       if (genreObj) {
         return genreObj._id;
       } else {
-        const newGenre = new Genre({ name });
-        await newGenre.save();
-        return newGenre._id;
+        genreObj = new Genre({ name });
+        await genreObj.save();
+        return genreObj._id;
       }
     })
   );
