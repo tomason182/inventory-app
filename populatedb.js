@@ -75,17 +75,18 @@ async function populateAuthorCollection() {
   });
 }
 
-async function populateGenreData() {
-  genresData.forEach(async (genreData) => {
-    const genre = new Genre({
-      name: genreData,
-    });
-
-    const genreExist = await Genre.findOne({ name: genreData });
-    if (genreExist !== null) {
-      await genre.save();
-    }
-  });
+async function populateGenreCollection(genresData) {
+  await Promise.all(
+    genresData.map(async (genreName) => {
+      let genre = await Genre.findOne({ name: genreName });
+      if (!genre) {
+        genre = new Genre({
+          name: genreName,
+        });
+        await genre.save();
+      }
+    })
+  );
 }
 
 async function populateBookData(booksData) {
