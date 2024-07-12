@@ -5,7 +5,8 @@ const genresData = [
   "Action & Adventure",
   "Mystery",
   "Horror",
-  "Thriller & Suspense",
+  "Thriller",
+  "Suspense",
   "Historical Fiction",
   "Romance",
   "Graphic Novel",
@@ -13,4 +14,6 @@ const genresData = [
   "Biography",
   "Food & Drink",
   "Art & Photography",
+  "psychology",
+  "Spiritual health",
 ];

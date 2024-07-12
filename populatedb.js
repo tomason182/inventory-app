@@ -13,6 +13,7 @@ const genresData = require("./data/genres-data");
 
 const mongoose = require("mongoose");
 const genre = require("./models/genre");
+const publisher = require("./models/publisher");
 mongoose.set("strictQuery", false);
 
 const mongoUrl = argv[2];
@@ -26,7 +27,7 @@ async function main() {
   await Promise.all([
     populatePublisherCollection(),
     populateAuthorCollection(),
-    populateGenreData(),
+    populateGenreCollection(),
   ]);
   console.log(
     "Debug: Authors, publisher and genre collection populated. Starting populating books collection"
@@ -37,89 +38,109 @@ async function main() {
 }
 
 // Populate publisher data into MongoDB Publishers collection.
-async function populatePublisherCollection() {
-  publishersData.forEach(async (publisherData) => {
-    const publisher = new Publisher({
-      name: publisherData.name,
-      address: publisherData.address,
-      phoneNumber: publisherData.phoneNumber,
-      email: publisherData.email,
-    });
+async function populatePublisherCollection(publishersData) {
+  try {
+    await Promise.all(
+      publishersData.map(async (publisherData) => {
+        let publisher = await Publisher.findOne({
+          name: publisherData.name,
+        });
 
-    // Check if publisher already exist in the database.
-    const publisherExist = await Publisher.findOne({ name: publisher.name });
-    if (publisherExist !== null) {
-      await publisher.save();
-    }
-  });
+        if (publisher === null) {
+          publisher = new Publisher({
+            name: publisherData.name,
+            address: publisherData.address,
+            phoneNumber: publisherData.phoneNumber,
+            email: publisherData.email,
+          });
+
+          await publisher.save();
+        }
+      })
+    );
+  } catch (err) {
+    console.log("Error populating publishers: ", err);
+  }
 }
 
 async function populateAuthorCollection(authorsData) {
-  await Promise.all(
-    authorsData.map(async (authorData) => {
-      let author = await Author.findOne({
-        first_name: authorData.first_name,
-        last_name: authorData.last_name,
-      });
-
-      if (author === null) {
-        author = new Author({
+  try {
+    await Promise.all(
+      authorsData.map(async (authorData) => {
+        let author = await Author.findOne({
           first_name: authorData.first_name,
           last_name: authorData.last_name,
-          bio: authorData.bio,
-          nationality: authorData.nationality,
-          date_of_birth: authorData.date_of_birth,
-          date_of_death: authorData.date_of_death,
         });
 
-        await author.save();
-      }
-    })
-  );
+        if (author === null) {
+          author = new Author({
+            first_name: authorData.first_name,
+            last_name: authorData.last_name,
+            bio: authorData.bio,
+            nationality: authorData.nationality,
+            date_of_birth: authorData.date_of_birth,
+            date_of_death: authorData.date_of_death,
+          });
+
+          await author.save();
+        }
+      })
+    );
+  } catch (err) {
+    console.log("Error populating authors: ", err);
+  }
 }
 
 async function populateGenreCollection(genresData) {
-  await Promise.all(
-    genresData.map(async (genreName) => {
-      let genre = await Genre.findOne({ name: genreName });
-      if (!genre) {
-        genre = new Genre({
-          name: genreName,
-        });
-        await genre.save();
-      }
-    })
-  );
+  try {
+    await Promise.all(
+      genresData.map(async (genreName) => {
+        let genre = await Genre.findOne({ name: genreName });
+        if (!genre) {
+          genre = new Genre({
+            name: genreName,
+          });
+          await genre.save();
+        }
+      })
+    );
+  } catch (err) {
+    console.log("Error population genres: ", err);
+  }
 }
 
 async function populateBookData(booksData) {
   // Logic to populate book data.
   // As book collection needs authors, publisher and genre info to be populated
-  await Promise.all(
-    booksData.map(async (book) => {
-      const authorId = await getAuthorId(book.author);
-      const publisherId = await getPublisherId(book.publisher);
-      const genreIds = await getGenreId(book.genre);
+  try {
+    await Promise.all(
+      booksData.map(async (book) => {
+        const authorId = await getAuthorId(book.author);
+        const publisherId = await getPublisherId(book.publisher);
+        const genreIds = await getGenreId(book.genre);
 
-      const newBook = new Book({
-        title: book.title,
-        author: authorId,
-        summary: book.summary,
-        isbn: book.isbn,
-        genre: genreIds,
-        publisher: publisherId,
-        qty: book.qty,
-        price: book.price,
-        publishedDate: new Date(book.publishedDate),
-      });
+        const newBook = new Book({
+          title: book.title,
+          author: authorId,
+          summary: book.summary,
+          isbn: book.isbn,
+          genre: genreIds,
+          publisher: publisherId,
+          qty: book.qty,
+          price: book.price,
+          publishedDate: new Date(book.publishedDate),
+        });
 
-      await newBook.save();
-    })
-  );
+        await newBook.save();
+      })
+    );
+  } catch (err) {
+    console.log("Error populatin books: ", err);
+  }
 }
 
 async function getAuthorId(fullname) {
-  const [lastName, firstName] = fullname.split(",").map((i) => i.trim());
+  const [firstName, lastName] = fullname.split(",").map((i) => i.trim());
   let authorObj = await Author.findOne({
     first_name: firstName,
     last_name: lastName,
