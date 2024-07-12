@@ -64,7 +64,7 @@ exports.publisher_update_get = async function (req, res, next) {
 };
 
 // Handle update a publisher on POST
-exports.publisher_create_get_update_post = async function (req, res, next) {
+exports.publisher_update_post = async function (req, res, next) {
   try {
     res.send("NOT IMPLEMENTED: Publisher updated POST");
   } catch (err) {
