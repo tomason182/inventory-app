@@ -6,8 +6,9 @@ const Genre = require("./models/genre");
 const Publisher = require("./models/publisher");
 
 // Data to populate db.
-const authorsData = require("./authors-data");
-const publishersData = require("./publishers-data");
+const authorsData = require("./data/authors-data");
+const publishersData = require("./data/publishers-data");
+const booksData = require("./data/books-data");
 
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
